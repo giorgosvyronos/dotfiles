@@ -37,6 +37,8 @@ return packer.startup(function(use)
     use("nvim-lua/plenary.nvim") -- lua functions that many plugins use
 
     use('whatyouhide/vim-gotham')
+    use("AlexvZyl/nordic.nvim")
+    use('arcticicestudio/nord-vim')
 
     use("szw/vim-maximizer") -- maximizes and restores current window
 
@@ -56,7 +58,11 @@ return packer.startup(function(use)
     -- fuzzy finding w/ telescope
     -- required by Telescope
     use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make" }) -- dependency for better sorting performance
-    use({ "nvim-telescope/telescope.nvim", branch = "0.1.x" }) -- fuzzy finder
+    use({ "nvim-telescope/telescope.nvim",
+    config = function ()
+        require("telescope").load_extension("notify")
+    end,
+    branch = "0.1.x" }) -- fuzzy finder
 
     -- treesitter configuration
     use({
@@ -105,25 +111,78 @@ return packer.startup(function(use)
     use {
         'glepnir/dashboard-nvim',
         event = 'VimEnter',
-        config = function()
-            require('dashboard').setup {
-                theme = 'hyper',
-                shortcut_type = 'number',
-                hide = {
-                    statusline,    -- hide statusline default is true
-                    tabline,       -- hide the tabline
-                    winbar,        -- hide winbar
-                },
-                preview = {
-                    command,       -- preview command
-                    file_path,     -- preview file path
-                    file_height,   -- preview file height
-                    file_width,    -- preview file width
-                },
-            }
-        end,
         requires = {'nvim-tree/nvim-web-devicons'}
     }
+
+    -- A pretty diagnostics, references, telescope results, quickfix and location list to help you solve all the trouble your code is causing.
+    use({
+        "folke/trouble.nvim",
+        config = function()
+            require("trouble").setup {
+                icons = false,
+                -- your configuration comes here
+                -- or leave it empty to use the default settings
+                -- refer to the configuration section below
+            }
+        end
+    })
+
+    -- A fancy, configurable, notification manager for NeoVim
+    use {
+        'rcarriga/nvim-notify',
+        config = function ()
+            require("notify").setup {
+                render = "compact",
+                stages = 'fade',
+                background_colour = 'FloatShadow',
+                timeout = 3000,
+            }
+            vim.notify = require('notify')
+        end
+    }
+    -- redesign of command line
+    use({
+        "folke/noice.nvim",
+        config = function()
+            require("noice").setup({
+                -- add any options here
+                -- routes = {
+                    --   {
+                        --     view = "notify",
+                        --     filter = { event = "msg_showmode" },
+                        --   },
+                        -- },
+                    })
+                end,
+                requires = {
+                    -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+                    "MunifTanjim/nui.nvim",
+                    -- OPTIONAL:
+                    --   `nvim-notify` is only needed, if you want to use the notification view.
+                    --   If not available, we use `mini` as the fallback
+                    "rcarriga/nvim-notify",
+                }
+            })
+
+    -- tree viewer for project
+    use ({
+        "nvim-tree/nvim-tree.lua",
+        config = function()
+            require("nvim-tree").setup({
+                sort_by = "case_sensitive",
+                view = {
+                    width = 30,
+                },
+                renderer = {
+                    group_empty = true,
+                },
+                filters = {
+                    dotfiles = true,
+                },
+            })
+        end,
+        requires = {"nvim-tree/nvim-web-devicons"}
+    })
     ---------------------------------------------------
     ------------- END OF PACKER LIBRARIES ------------- 
     ---------------------------------------------------

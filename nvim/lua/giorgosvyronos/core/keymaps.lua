@@ -74,6 +74,10 @@ keymap.set("n", "<leader>tp", ":tabp<CR>") -- go to previous tab
 keymap.set('n','<Tab>', ">>")
 keymap.set('n','<S-Tab>', "<<")
 
+-- nvimtree keymaps
+keymap.set('n','<leader>e', ":NvimTreeToggle<CR>", { silent = true })
+keymap.set('n','<leader>nn', ":NvimTreeFocus<CR>", { silent = true })
+
 -- debugger
 keymap.set("n", "<F5>", ":lua require'dap'.continue()<CR>")
 keymap.set("n", "<F9>", ":lua require'dap'.step_over()<CR>")
