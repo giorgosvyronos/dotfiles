@@ -30,6 +30,8 @@ opt.smartcase = true
 opt.cursorline = true
 
 -- appearance
+vim.cmd 'colorscheme nordic' --kanagawa'
+
 opt.scrolloff = 8
 opt.background = "dark"
 opt.signcolumn = "yes"

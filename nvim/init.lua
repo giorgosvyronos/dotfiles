@@ -1,7 +1,6 @@
 require("giorgosvyronos.plugins-setup")
 require("giorgosvyronos.core.options")
 require("giorgosvyronos.core.keymaps")
-require("giorgosvyronos.core.colorscheme")
 require("giorgosvyronos.plugins.lualine")
 require("giorgosvyronos.plugins.telescope")
 require("giorgosvyronos.plugins.treesitter")
