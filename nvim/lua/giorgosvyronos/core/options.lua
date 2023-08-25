@@ -30,13 +30,13 @@ opt.smartcase = true
 opt.cursorline = true
 
 -- appearance
-vim.cmd 'colorscheme nordic' --kanagawa'
+vim.cmd("colorscheme nordic") --kanagawa'
 
 opt.scrolloff = 8
 opt.background = "dark"
 opt.signcolumn = "yes"
 opt.termguicolors = true
-opt.colorcolumn = "80"
+-- opt.colorcolumn = "80"
 
 -- backspace
 opt.backspace = "indent,eol,start"
