@@ -20,6 +20,13 @@ return {
 
     -- Add your own debuggers here
     'leoluz/nvim-dap-go',
+
+    -- python related debugging plugins, based on starter.lvim repo
+    "ChristianChiarulli/swenv.nvim",
+    "stevearc/dressing.nvim",
+    "mfussenegger/nvim-dap-python",
+    "nvim-neotest/neotest",
+    "nvim-neotest/neotest-python"
   },
   config = function()
     local dap = require 'dap'
@@ -29,7 +36,7 @@ return {
       -- Makes a best effort to setup the various debuggers with
       -- reasonable debug configurations
       automatic_setup = true,
-
+      automatic_installation = true,
       -- You can provide additional configuration to the handlers,
       -- see mason-nvim-dap README for more information
       handlers = {},
@@ -39,6 +46,9 @@ return {
       ensure_installed = {
         -- Update this to ensure that you have the debuggers for the langs you want
         'delve',
+        -- python related
+        'flake8',
+        'black',
       },
     }
 
@@ -60,6 +70,8 @@ return {
       --    Don't feel like these are good choices.
       icons = { expanded = '▾', collapsed = '▸', current_frame = '*' },
       controls = {
+        enabled = true,
+        element = '',
         icons = {
           pause = '⏸',
           play = '▶',
@@ -83,5 +95,29 @@ return {
 
     -- Install golang specific config
     require('dap-go').setup()
+    local mason_path = vim.fn.glob(vim.fn.stdpath "data" .. "/mason/")
+    require('dap-python').setup(mason_path .. "packages/debugpy/venv/bin/python")
+
+    require("neotest").setup({
+      adapters = {
+        require("neotest-python")({
+          -- Extra arguments for nvim-dap configuration
+          -- See https://github.com/microsoft/debugpy/wiki/Debug-configuration-settings for values
+          dap = {
+            justMyCode = false,
+            console = "integratedTerminal",
+          },
+          args = { "--log-level", "DEBUG", "--quiet" },
+          runner = "pytest",
+        })
+      }
+    })
+
+    vim.keymap.set("n", "dm", "<cmd>lua require('neotest').run.run()<cr>", { desc = "Test Method" })
+    vim.keymap.set("n", "dM", "<cmd>lua require('neotest').run.run({strategy = 'dap'})<cr>", { desc = "Test Method DAP" })
+    vim.keymap.set("n", "df", "<cmd>lua require('neotest').run.run({vim.fn.expand('%')})<cr>", { desc = "Test Class" })
+    vim.keymap.set("n", "dF", "<cmd>lua require('neotest').run.run({vim.fn.expand('%'), strategy = 'dap'})<cr>",
+      { desc = "Test Class DAP" })
+    vim.keymap.set("n", "dS", "<cmd>lua require('neotest').summary.toggle()<cr>", { desc = "Test Summary" })
   end,
 }
