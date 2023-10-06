@@ -12,7 +12,6 @@ Based on the Kickstart.nvim template.
 --  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
-
 -- Install package manager
 --    https://github.com/folke/lazy.nvim
 --    `:help lazy.nvim.txt` for more info
@@ -28,7 +27,6 @@ if not vim.loop.fs_stat(lazypath) then
   }
 end
 vim.opt.rtp:prepend(lazypath)
-
 -- NOTE: Here is where you install your plugins.
 --  You can configure plugins using the `config` key.
 --
@@ -42,7 +40,7 @@ require('lazy').setup({
   'tpope/vim-rhubarb',
 
   -- Detect tabstop and shiftwidth automatically
-  'tpope/vim-sleuth',
+  -- 'tpope/vim-sleuth',
 
   -- NOTE: This is where your plugins related to LSP can be installed.
   --  The configuration is done below. Search for lspconfig to find it below.
@@ -213,7 +211,7 @@ require('lazy').setup({
 -- NOTE: You can change these options as you wish!
 
 -- Make line numbers default
-vim.wo.number = true
+vim.o.number = true
 
 -- Enable mouse mode
 vim.o.mouse = 'a'
@@ -223,9 +221,17 @@ vim.o.mouse = 'a'
 --  See `:help 'clipboard'`
 vim.o.clipboard = 'unnamedplus'
 
+-- tab & indentation
+vim.o.expandtab = true
+vim.o.tabstop = 4
+vim.o.softtabstop = 4
+vim.o.shiftwidth = 4
+vim.o.autoindent = true
+vim.o.smartindent = true
+-- line wrapping
+vim.o.wrap = true
 -- Enable break indent
 vim.o.breakindent = true
-
 -- Case-insensitive searching UNLESS \C or capital in search
 vim.o.ignorecase = true
 vim.o.smartcase = true
@@ -247,15 +253,6 @@ vim.o.termguicolors = true
 
 vim.o.relativenumber = true
 
--- tab & indentation
-vim.o.tabstop = 4
-vim.o.softtabstop = 4
-vim.o.shiftwidth = 4
-vim.o.expandtab = true
-vim.o.autoindent = true
-vim.o.smartindent = true
--- line wrapping
-vim.o.wrap = true
 
 -- backup
 vim.o.swapfile = false
@@ -291,7 +288,7 @@ end
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
-
+vim.keymap.set("n", "<leader>=", ":Format<CR>", { desc = 'Format' })
 -- [[My Keymaps]]
 -- general keymaps
 vim.keymap.set("n", "<leader>st", ":Themery<CR>", { desc = '[S]elect [T]heme' })
@@ -299,7 +296,7 @@ vim.keymap.set("n", "<leader>st", ":Themery<CR>", { desc = '[S]elect [T]heme' })
 vim.keymap.set("i", "jk", "<ESC>")
 vim.keymap.set("n", "x", '"_x')
 
-vim.keymap.set("n", "<leader>=", "<C-a>", { desc = 'Increase by 1' })
+vim.keymap.set("n", "<leader>+", "<C-a>", { desc = 'Increase by 1' })
 vim.keymap.set("n", "<leader>-", "<C-x>", { desc = 'Decrease by 1' })
 
 --Clear Searches
@@ -556,11 +553,12 @@ local luasnip = require 'luasnip'
 require('luasnip.loaders.from_vscode').lazy_load()
 local icon = require('custom.utils.icons').kind
 luasnip.config.setup {}
+
 cmp.setup {
   formatting = {
-    fields = { 'kind', 'abbr', 'menu' },
+    fields = { 'abbr', 'menu', 'kind' },
     format = function(_, vim_item)
-      vim_item.kind = icon[vim_item.kind]
+      vim_item.kind = (icon[vim_item.kind] or "") .. " " .. vim_item.kind
       return vim_item
     end,
   },
