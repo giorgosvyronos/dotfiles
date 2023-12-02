@@ -2,8 +2,6 @@
 
 =====================================================================
 =================== GIORGOS VYRONOS NVIM CONFIG ====================
-                          local WIDTH_RATIO = 0.5
-================== GIORGOS VYRONOS NVIM CONFIG ====================
 =====================================================================
 
 Based on the Kickstart.nvim template.
@@ -14,6 +12,8 @@ Based on the Kickstart.nvim template.
 --  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
+require('core.options')
+require('core.keymaps')
 -- Install package manager
 --    https://github.com/folke/lazy.nvim
 --    `:help lazy.nvim.txt` for more info
@@ -40,8 +40,7 @@ require('lazy').setup({
   'tpope/vim-fugitive',
   'tpope/vim-rhubarb',
 
-  -- Detect tabstop and shiftwidth automatically
-  -- 'tpope/vim-sleuth',
+  'tpope/vim-sleuth',
 
   -- See `:help vim.o`
   -- NOTE: You can change these options as you wish!
@@ -107,52 +106,6 @@ require('lazy').setup({
     },
   },
   {
-    -- Set lualine as statusline
-    'nvim-lualine/lualine.nvim',
-    -- See `:help lualine.txt`
-    opts = {
-      options = {
-        icons_enabled = true,
-        theme = 'auto',
-        component_separators = { left = '|', right = '|' },
-        section_separators = { left = '|', right = '|' },
-        disabled_filetypes = {
-          statusline = {},
-          winbar = {},
-        },
-        ignore_focus = {},
-        always_divide_middle = true,
-        globalstatus = false,
-        refresh = {
-          statusline = 1000,
-          tabline = 1000,
-          winbar = 1000,
-        }
-      },
-      sections = {
-        lualine_a = { 'mode' },
-        lualine_b = { 'branch', 'diff', 'diagnostics' },
-        lualine_c = { 'filename' },
-        lualine_x = { 'encoding', 'fileformat', 'filetype' },
-        lualine_y = { 'progress' },
-        lualine_z = { 'location' }
-      },
-      inactive_sections = {
-        lualine_a = {},
-        lualine_b = {},
-        lualine_c = { 'filename' },
-        lualine_x = { 'location' },
-        lualine_y = {},
-        lualine_z = {}
-      },
-      tabline = {},
-      winbar = {
-      },
-      inactive_winbar = {},
-      extensions = {}
-    },
-  },
-  {
     -- Add indentation guides even on blank lines
     'lukas-reineke/indent-blankline.nvim',
     -- Enable `lukas-reineke/indent-blankline.nvim`
@@ -198,7 +151,6 @@ require('lazy').setup({
   --       Uncomment any of the lines below to enable them.
   require 'kickstart.plugins.autoformat',
   require 'kickstart.plugins.debug',
-
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    You can use this folder to prevent any conflicts with this init.lua if you're interested in keeping
   --    up-to-date with whatever is in the kickstart repo.
@@ -210,7 +162,7 @@ require('lazy').setup({
 }, {})
 
 -- [[Options]]
-require('core.options')
+
 
 local signs = require('custom.utils.icons').diagnostics
 
@@ -219,7 +171,6 @@ for type, icon in pairs(signs) do
   vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
 end
 -- [[ Keymaps ]]
-require('core.keymaps')
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
@@ -335,6 +286,9 @@ require('nvim-treesitter.configs').setup {
 }
 
 -- Diagnostic keymaps
+vim.diagnostic.config {
+  float = { border = "rounded" },
+}
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
@@ -380,7 +334,22 @@ local on_attach = function(client, bufnr)
   -- for LSP related items. It sets the mode, buffer and description for us each time.
   local navic = require("nvim-navic")
   -- navic
-  navic.setup { highlight = true }
+  navic.setup {
+    lsp = {
+      auto_attach = false,
+      preference = nil,
+    },
+    highlight = true,
+    separator = " > ",
+    depth_limit = 0,
+    depth_limit_indicator = "..",
+    safe_output = true,
+    lazy_update_context = false,
+    click = true,
+    format_text = function(text)
+      return text
+    end,
+  }
   vim.api.nvim_set_hl(0, "NavicIconsFile", { default = true, fg = "#c8d3f5" })
   vim.api.nvim_set_hl(0, "NavicIconsModule", { default = true, fg = "#ffc777" })
   vim.api.nvim_set_hl(0, "NavicIconsNamespace", { default = true, fg = "#c8d3f5" })
@@ -500,6 +469,14 @@ require('neodev').setup()
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
+local handlers = {
+  ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" }),
+  ["textDocument/show_line_diagnostics"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" }),
+  ["textDocument/diagnostic"] = vim.lsp.with(vim.diagnostic.open_float, { border = "rounded" }),
+  ["textDocument/diagnostics"] = vim.lsp.with(vim.lsp.diagnostic.hover, { border = "rounded" }),
+  ['textDocument/signatureHelp'] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" }),
+}
+
 -- Ensure the servers above are installed
 local mason_lspconfig = require 'mason-lspconfig'
 
@@ -513,6 +490,7 @@ require('lspconfig')['pyright'].setup {
   on_attach = on_attach,
   settings = servers['pyright'],
   filetypes = (servers['pyright'] or {}).filetypes,
+  handlers = handlers
 }
 
 mason_lspconfig.setup_handlers {
@@ -522,6 +500,7 @@ mason_lspconfig.setup_handlers {
       on_attach = on_attach,
       settings = servers[server_name],
       filetypes = (servers[server_name] or {}).filetypes,
+      handlers = handlers
     }
   end
 }
@@ -536,7 +515,10 @@ local icon = require('custom.utils.icons').kind
 luasnip.config.setup {}
 
 cmp.setup {
-
+  window = {
+    completion = cmp.config.window.bordered(),
+    documentation = cmp.config.window.bordered(),
+  },
   formatting = {
     fields = { 'abbr', 'menu', 'kind' },
     format = function(_, vim_item)

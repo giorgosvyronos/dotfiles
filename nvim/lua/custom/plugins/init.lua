@@ -77,7 +77,19 @@ return {
         'goolord/alpha-nvim',
         dependencies = { 'nvim-tree/nvim-web-devicons' },
         config = function()
-            require 'alpha'.setup(require 'alpha.themes.startify'.config)
+            local alpha = require("alpha")
+            local startify = require("alpha.themes.startify")
+
+            startify.section.header.val = {
+                "  ██╗  ██╗ ██████╗ ██╗  ██╗ ██████╗ ███████╗ ",
+                "  ██║ ██╔╝██╔═████╗██║ ██╔╝██╔═████╗██╔════╝ ",
+                "  █████╔╝ ██║██╔██║█████╔╝ ██║██╔██║███████╗ ",
+                "  ██╔═██╗ ████╔╝██║██╔═██╗ ████╔╝██║╚════██║ ",
+                "  ██║  ██╗╚██████╔╝██║  ██╗╚██████╔╝███████║ ",
+                "  ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚═════╝ ╚══════╝ ",
+                "                                             ",
+            }
+            alpha.setup(startify.opts)
         end
     },
 
@@ -99,8 +111,7 @@ return {
                 return vim.bo[buf].modified and "'" or ""
             end
             local theme = {
-                fill = 'TabLineFill',
-                -- Also you can do this: fill = { fg='#f2e9de', bg='#907aa9', style='italic' }
+                fill = { fg = '#f2e9de', bg = '#907aa9', style = 'italic' },
                 head = 'TabLine',
                 current_tab = 'TabLineSel',
                 tab = 'TabLine',
@@ -302,8 +313,8 @@ return {
         "echasnovski/mini.indentscope",
         version = false, -- wait till new 0.7.0 release to put it back on semver
         opts = {
-            -- symbol = "▏",
-            symbol = "│",
+            symbol = "▏",
+            -- symbol = "│",
             options = { try_as_border = true },
         },
         init = function()

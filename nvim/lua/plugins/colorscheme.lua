@@ -1,54 +1,97 @@
-local palettes = {
-    -- Everything defined under `all` will be applied to each style.
-    all = {
-        -- Each palette defines these colors:
-        --   black, gray, blue, green, magenta, pink, red, white, yellow, cyan
-        --
-        -- These colors have 2 shades: base, and bright
-
-        -- Passing a string sets the base
-        red = {
-            base = '#8e1519',
-            bright = '#ee0000',
-        },
-    },
-}
-
-local specs = {
-    -- As with palettes, the values defined under `all` will be applied to every style.
-    all = {
-        syntax = {
-            -- Specs allow you to define a value using either a color or template. If the string does
-            -- start with `#` the string will be used as the path of the palette table. Defining just
-            -- a color uses the base version of that color.
-            keywords = 'red.base',
-
-            -- Adding either `.bright` will change the value
-            conditional = 'red.bright',
-            number = 'orange',
-        },
-    }
-}
-
-
 return {
-    'projekt0n/github-nvim-theme',
-    lazy = false,    -- make sure we load this during startup if it is your main colorscheme
-    priority = 1000, -- make sure to load this before all the other start plugins
+    "zootedb0t/citruszest.nvim",
+    lazy = false,
+    priority = 1000,
     config = function()
-        require('github-theme').setup({
-            specs = specs,
-            palettes = palettes,
-            options = {
-                transparent = true,
-                styles = {
-                    comments = 'italic',
-                    keywords = 'bold',
-                    types = 'italic,bold',
-                },
+        require("citruszest").setup({
+            option = {
+                transparent = false, -- Enable/Disable transparency
+                italic = true,
+                bold = true,
+            },
+            -- Override default highlight style in this table
+            -- E.g If you want to override `Constant` highlight style
+            style = {
+                -- This will change Constant foreground color and make it bold.
+                Constant = { fg = "#FFFFFF", bold = true },
+                Comment = { italic = true }
             },
         })
-
-        vim.cmd('colorscheme github_dark_colorblind')
-    end,
+        vim.cmd('colorscheme citruszest')
+    end
 }
+-- return {
+--     'navarasu/onedark.nvim',
+--     lazy = false,
+--     priority = 1000,
+--     config = function()
+--         -- Lua
+--         require('onedark').setup {
+--             -- Main options --
+--             style = 'darker',             -- Default theme style. Choose between 'dark', 'darker', 'cool', 'deep', 'warm', 'warmer' and 'light'
+--             transparent = true,           -- Show/hide background
+--             term_colors = true,           -- Change terminal color as per the selected theme style
+--             ending_tildes = false,        -- Show the end-of-buffer tildes. By default they are hidden
+--             cmp_itemkind_reverse = false, -- reverse item kind highlights in cmp menu
+--
+--             -- toggle theme style ---
+--             toggle_style_key = nil,                                                              -- keybind to toggle theme style. Leave it nil to disable it, or set it to a string, for example "<leader>ts"
+--             toggle_style_list = { 'dark', 'darker', 'cool', 'deep', 'warm', 'warmer', 'light' }, -- List of styles to toggle between
+--
+--             -- Change code style ---
+--             -- Options are italic, bold, underline, none
+--             -- You can configure multiple style with comma separated, For e.g., keywords = 'italic,bold'
+--             code_style = {
+--                 comments = 'italic',
+--                 keywords = 'none',
+--                 functions = 'bold',
+--                 strings = 'italic',
+--                 variables = 'none'
+--             },
+--
+--             -- Lualine options --
+--             lualine = {
+--                 transparent = true, -- lualine center bar transparency
+--             },
+--
+--             -- Custom Highlights --
+--             colors = {},     -- Override default colors
+--             highlights = {}, -- Override highlight groups
+--
+--             -- Plugins Config --
+--             diagnostics = {
+--                 darker = true,     -- darker colors for diagnostic
+--                 undercurl = true,  -- use undercurl instead of underline for diagnostics
+--                 background = true, -- use background color for virtual text
+--             },
+--         }
+--         require('onedark').load()
+--         vim.cmd('colorscheme onedark')
+--     end
+--
+-- }
+-- return {
+--     'projekt0n/github-nvim-theme',
+--     lazy = false,    -- make sure we load this during startup if it is your main colorscheme
+--     priority = 1000, -- make sure to load this before all the other start plugins
+--     config = function()
+--         require('github-theme').setup({
+--             options = {
+--                 transparent = true,
+--                 styles = {               -- Style to be applied to different syntax groups
+--                     comments = 'italic', -- Value is any valid attr-list value `:help attr-list`
+--                     functions = 'bold',
+--                     keywords = 'bold',
+--                     variables = 'NONE',
+--                     conditionals = 'NONE',
+--                     constants = 'bold',
+--                     numbers = 'bold',
+--                     operators = 'NONE',
+--                     strings = 'italic,bold',
+--                     types = 'NONE',
+--                 },
+--             },
+--         })
+--         vim.cmd('colorscheme github_dark_colorblind')
+--     end,
+-- }

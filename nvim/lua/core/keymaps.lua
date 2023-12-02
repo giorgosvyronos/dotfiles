@@ -35,5 +35,8 @@ vim.keymap.set("n", "<leader>sh", "<C-w>s", { silent = true, desc = '[S]plit Win
 vim.keymap.set("n", "<leader>se", "<C-w>=", { silent = true, desc = '[S]plit Windows [E]qual Width' })
 vim.keymap.set("n", "<leader>sx", ":close<CR>", { silent = true, desc = '[S]plit Window [C]lose' })
 
--- Bufferline tab setup
+-- Bufferline indent setup
 vim.keymap.set('n', '<Tab>', ">>", { desc = 'Move line forward by Tabsize' })
+vim.keymap.set('n', '<S-Tab>', "<<", { desc = 'Move line backwards by Tabsize' })
+vim.keymap.set('v', '<Tab>', ">", { desc = 'Move block forward by Tabsize' })
+vim.keymap.set('v', '<S-Tab>', "<", { desc = 'Move block backwards by Tabsize' })
